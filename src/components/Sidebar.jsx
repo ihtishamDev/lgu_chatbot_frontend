@@ -24,7 +24,6 @@ export default function Sidebar({
     setEditingId(null)
   }
 
-  // Group sessions by date
   const groups = {}
   sessions.forEach(s => {
     if (!groups[s.date]) groups[s.date] = []
@@ -34,28 +33,41 @@ export default function Sidebar({
   const today = new Date().toLocaleDateString()
 
   return (
-    <div className="w-64 h-full flex flex-col"
-      style={{ background: "rgba(255,255,255,0.45)", backdropFilter: "blur(20px)", borderRight: "1px solid rgba(255,255,255,0.6)" }}>
+    <div className="w-56 h-full flex flex-col bg-stone-900">
 
       {/* Header */}
-      <div className="p-5 border-b" style={{ borderColor: "rgba(255,255,255,0.6)" }}>
+      <div className="p-4 border-b border-stone-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center text-lg"
-            style={{ background: "linear-gradient(135deg, #2d2d2d, #1a1a1a)" }}>
-            🎓
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-orange-400 flex-shrink-0">
+            <img src="/lgu.jpg" alt="LGU" className="w-full h-full object-cover" />
           </div>
           <div>
-            <h2 className="font-semibold text-sm" style={{ color: "#2d2d2d" }}>LGU Assistant</h2>
-            <p className="text-xs" style={{ color: "#8a7a75" }}>AI Powered</p>
+            <h2 className="font-bold text-sm text-white">LGU Assistant</h2>
+            <p className="text-xs text-stone-400">AI Powered</p>
           </div>
         </div>
+      </div>
+
+      {/* Nav Items */}
+      <div className="px-3 py-4 border-b border-stone-700 flex flex-col gap-1">
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-stone-800 text-orange-400 text-sm font-medium">
+          <span>💬</span> Chats
+        </div>
+        {/* <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-stone-400 text-sm hover:bg-stone-800 cursor-pointer transition-all">
+          <span>📚</span> Programs
+        </div>
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-stone-400 text-sm hover:bg-stone-800 cursor-pointer transition-all">
+          <span>💰</span> Fee Info
+        </div>
+        <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-stone-400 text-sm hover:bg-stone-800 cursor-pointer transition-all">
+          <span>🎓</span> Admissions
+        </div> */}
       </div>
 
       {/* New Chat Button */}
       <div className="p-3">
         <button onClick={onNewChat}
-          className="w-full py-2.5 px-4 rounded-2xl text-sm font-medium flex items-center justify-center gap-2 transition-all"
-          style={{ background: "linear-gradient(135deg, #2d2d2d, #1a1a1a)", color: "white" }}>
+          className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-400 text-white transition-all shadow-lg">
           ✏️ New Chat
         </button>
       </div>
@@ -63,14 +75,13 @@ export default function Sidebar({
       {/* History */}
       <div className="flex-1 overflow-y-auto px-2 pb-4">
         {sessions.length === 0 ? (
-          <p className="text-xs text-center py-8" style={{ color: "#8a7a75" }}>
+          <p className="text-xs text-center py-8 text-stone-500">
             No chats yet.<br />Start a new chat!
           </p>
         ) : (
           Object.keys(groups).map(date => (
             <div key={date}>
-              <p className="text-xs font-semibold px-2 py-2 uppercase tracking-wider"
-                style={{ color: "#8a7a75" }}>
+              <p className="text-xs font-semibold px-2 py-2 uppercase tracking-wider text-stone-500">
                 {date === today ? "Today" : date}
               </p>
               {groups[date].map(session => {
@@ -80,18 +91,14 @@ export default function Sidebar({
                 return (
                   <div key={session.id}
                     onClick={() => onLoadSession(session.id)}
-                    className="group flex items-center gap-2 px-3 py-2.5 rounded-xl mb-1 cursor-pointer transition-all"
-                    style={{
-                      background: isActive ? "rgba(255,255,255,0.75)" : "transparent",
-                      boxShadow: isActive ? "0 2px 8px rgba(0,0,0,0.08)" : "none"
-                    }}>
+                    className={`group flex items-center gap-2 px-3 py-2.5 rounded-xl mb-1 cursor-pointer transition-all
+                      ${isActive ? "bg-stone-700 text-white" : "text-stone-400 hover:bg-stone-800"}`}>
 
-                    <span className="text-sm">💬</span>
+                    <span className="text-xs">💬</span>
 
                     {isEditing ? (
                       <input
-                        className="flex-1 text-xs px-2 py-1 rounded-lg outline-none"
-                        style={{ background: "rgba(255,255,255,0.8)", color: "#2d2d2d", border: "1px solid #f2d4cc" }}
+                        className="flex-1 text-xs px-2 py-1 rounded-lg outline-none bg-stone-600 text-white border border-orange-400"
                         value={editTitle}
                         onChange={e => setEditTitle(e.target.value)}
                         onClick={e => e.stopPropagation()}
@@ -99,30 +106,25 @@ export default function Sidebar({
                         autoFocus
                       />
                     ) : (
-                      <span className="flex-1 text-xs truncate" style={{ color: "#2d2d2d" }}>
+                      <span className="flex-1 text-xs truncate">
                         {session.title}
                       </span>
                     )}
 
-                    {/* Action Buttons */}
                     <div className={`flex gap-1 ${isEditing ? "flex" : "hidden group-hover:flex"}`}>
                       {isEditing ? (
                         <>
                           <button onClick={e => confirmEdit(e, session.id)}
-                            className="w-6 h-6 rounded-lg text-xs flex items-center justify-center"
-                            style={{ background: "#d4edda", color: "#2d6a4f" }}>✓</button>
+                            className="w-5 h-5 rounded text-xs flex items-center justify-center bg-green-700 text-green-200">✓</button>
                           <button onClick={cancelEdit}
-                            className="w-6 h-6 rounded-lg text-xs flex items-center justify-center"
-                            style={{ background: "#f2d4cc", color: "#8a4a3a" }}>✕</button>
+                            className="w-5 h-5 rounded text-xs flex items-center justify-center bg-red-800 text-red-200">✕</button>
                         </>
                       ) : (
                         <>
                           <button onClick={e => startEdit(e, session)}
-                            className="w-6 h-6 rounded-lg text-xs flex items-center justify-center"
-                            style={{ background: "rgba(255,255,255,0.8)", color: "#8a7a75" }}>✏️</button>
+                            className="w-5 h-5 rounded text-xs flex items-center justify-center bg-stone-600 text-stone-300">✏️</button>
                           <button onClick={e => { e.stopPropagation(); onDeleteSession(session.id) }}
-                            className="w-6 h-6 rounded-lg text-xs flex items-center justify-center"
-                            style={{ background: "rgba(255,255,255,0.8)", color: "#e57373" }}>🗑️</button>
+                            className="w-5 h-5 rounded text-xs flex items-center justify-center bg-red-900 text-red-300">🗑️</button>
                         </>
                       )}
                     </div>
@@ -135,8 +137,8 @@ export default function Sidebar({
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t text-center text-xs" style={{ borderColor: "rgba(255,255,255,0.6)", color: "#8a7a75" }}>
-        Llama 3.2 + RAG
+      <div className="p-3 border-t border-stone-700 text-center text-xs text-stone-500">
+        Claude AI + RAG • LGU 2025
       </div>
     </div>
   )

@@ -31,7 +31,7 @@ export default function InputBar({ onSend, disabled }) {
     recognition.interimResults = true
     recognitionRef.current = recognition
 
-    recognition.onstart = () => { setListening(true); setVoiceStatus("🎤 Listening...") }
+    recognition.onstart = () => { setListening(true); setVoiceStatus("Listening...") }
     recognition.onend = () => setListening(false)
 
     recognition.onresult = (e) => {
@@ -41,15 +41,15 @@ export default function InputBar({ onSend, disabled }) {
       }
       setText(transcript)
       if (e.results[e.results.length - 1].isFinal) {
-        setVoiceStatus("✅ Done! Click Send.")
+        setVoiceStatus("Done! Click Send.")
         setListening(false)
       } else {
-        setVoiceStatus(`🎤 Hearing: "${transcript}"`)
+        setVoiceStatus(`Hearing: "${transcript}"`)
       }
     }
 
     recognition.onerror = (e) => {
-      setVoiceStatus("❌ " + e.error)
+      setVoiceStatus("Error: " + e.error)
       setListening(false)
     }
 
@@ -62,22 +62,15 @@ export default function InputBar({ onSend, disabled }) {
   }
 
   return (
-    <div className="p-4">
+    <div className="px-3 md:px-6 py-3 md:py-4 bg-white border-t border-stone-200">
       {voiceStatus && (
-        <p className="text-xs text-center mb-2" style={{ color: "#8a7a75" }}>{voiceStatus}</p>
+        <p className="text-xs text-center mb-2 text-orange-500">{voiceStatus}</p>
       )}
-      <div className="flex items-center gap-2 px-4 py-3 rounded-2xl"
-        style={{
-          background: "rgba(255,255,255,0.75)",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-          border: "1px solid rgba(255,255,255,0.8)"
-        }}>
+      <div className="flex items-center gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-2xl bg-stone-100 border border-stone-200 focus-within:border-orange-300 focus-within:shadow-md transition-all">
 
         <input
-          className="flex-1 bg-transparent outline-none text-sm"
-          style={{ color: "#2d2d2d" }}
-          placeholder="Ask SayHalo anything..."
+          className="flex-1 bg-transparent outline-none text-sm text-stone-800 placeholder-stone-400"
+          placeholder="Type something..."
           value={text}
           onChange={e => setText(e.target.value)}
           onKeyPress={handleKey}
@@ -85,22 +78,18 @@ export default function InputBar({ onSend, disabled }) {
         />
 
         <button onClick={toggleVoice}
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-base transition-all"
-          style={{
-            background: listening ? "#ff4444" : "rgba(0,0,0,0.06)",
-            animation: listening ? "pulse 1s infinite" : "none"
-          }}>
+          className={`w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-sm transition-all flex-shrink-0
+            ${listening ? "bg-red-500 text-white" : "bg-stone-200 text-stone-500 hover:bg-stone-300"}`}>
           {listening ? "🔴" : "🎤"}
         </button>
 
         <button onClick={handleSend}
           disabled={!text.trim() || disabled}
-          className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
-          style={{
-            background: text.trim() ? "linear-gradient(135deg, #2d2d2d, #1a1a1a)" : "rgba(0,0,0,0.1)",
-            color: text.trim() ? "white" : "#8a7a75"
-          }}>
-          Send →
+          className={`w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center text-sm font-bold transition-all flex-shrink-0
+            ${text.trim() && !disabled
+              ? "bg-orange-500 text-white hover:bg-orange-400 shadow-md"
+              : "bg-stone-200 text-stone-400 cursor-not-allowed"}`}>
+          ➤
         </button>
       </div>
     </div>
